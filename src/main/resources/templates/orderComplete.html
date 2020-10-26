@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="back-sign">Main Page</a>
+        <h1 class="header-headline">Online Shop</h1>
+    </div>
+
+    <div class="content-section">
+        <div class="inner-section">
+            <div th:if="${orderId == '-1'}">
+                <h1 class="message">There was an error processing your order, please go back and try again.</h1>
+            </div>
+            <div th:unless="${orderId == '-1'}">
+                <h1>Thank you for your purchase!</h1>
+                <h1 th:text="'Your Order ID: ' + ${orderId}"></h1>
+                <h1 th:text="'Your User ID: ' + ${userId}"></h1>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

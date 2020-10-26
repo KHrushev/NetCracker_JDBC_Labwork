@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+
+    <link rel="stylesheet" type="text/css" href="home.css">
+</head>
+<body>
+<div class="topnav">
+    <a href="/">Home</a>
+    <input id="shoppingCartButton" type="button" value="Shopping Cart">
+</div>
+
+<div class="container">
+    <form id="filter-form" class="filter-section">
+
+        <label for="filter-category">Categories:</label>
+        <select id="filter-category" name="filter-category" multiple size="6">
+            <option selected>Default</option>
+            <option value="Main Course Meals">Main Course Meals</option>
+            <option value="Meat">Meat</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Drinks">Drinks</option>
+        </select>
+
+        <label for="filter-price">Price:</label>
+        <select id="filter-price" name="filter-price">
+            <option selected>Default</option>
+            <option value="Low to High">Low to High</option>
+            <option value="High to Low">High to Low</option>
+        </select>
+
+        <input type="button" value="Filter" id="filter-submit">
+        <a href="/" id="filter-reset">Reset</a>
+    </form>
+
+    <div id="content-section" class="items-section">
+        <div th:each="item : ${productList}" class="card">
+            <h1 class="product-name" th:text="${item.getName()}"></h1>
+            <h4 class="product-id" th:text="'Item ID: ' + ${item.getId()}" style="color: #5a5a5a"></h4>
+            <h3 class="product-desc" th:text="${item.getDescription()}"></h3>
+            <h3 class="product-price" th:text="${item.getPrice()} + '$'"></h3>
+            <button class="addToCartButton">Add to Cart</button>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div id="inner-modal" class="modal-content">
+            <div id="modal-header">
+                <h1 id="shopping-cart-header">Shopping Cart</h1>
+                <span class="close">&times;</span>
+            </div>
+        </div>
+        <div id="confirmation-section" class="modal-content"></div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    function Product(id, name, price, description) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
+
+    // Reads data from cookie, if there are no items in cookie, results in empty list.
+    let shoppingCart = parseCookie();
+
+    // Adds event listeners for 'Add To Cart' buttons.
+    addEventListeners();
+
+    // Adds event listener for filter 'submit' button.
+    const submitButton = document.getElementById("filter-submit");
+    submitButton.addEventListener('click', function () {
+        filterContent();
+    });
+
+    // AJAX function for filter request/response
+    function filterContent() {
+        fetch('/filter', {
+            method: "POST",
+            body: new FormData(document.getElementById("filter-form"))
+        }).then(function (response) {
+            return response.text();
+        }).then(function (text) {
+            document.getElementById("content-section").innerHTML = text;
+            addEventListeners();
+        }).catch(function (error) {
+            console.error(error);
+        });
+    }
+
+    // Adds event listeners for 'Add To Cart' buttons.
+    function addEventListeners() {
+        const cartButtons = document.getElementsByClassName("addToCartButton");
+
+        for (const item of cartButtons) {
+            item.addEventListener("click", function () {
+                const parentNode = item.parentElement;
+
+                const idNode = parentNode.getElementsByClassName("product-id");
+                let productId = idNode[0].textContent.substring(idNode[0].textContent.length-2, idNode[0].textContent.length);
+                productId = productId.replace(":", "");
+                console.log(productId);
+
+                const nameNode = parentNode.getElementsByClassName("product-name");
+                const productName = nameNode[0].textContent;
+
+                const priceNode = parentNode.getElementsByClassName("product-price");
+                const productPrice = priceNode[0].textContent.substring(0, priceNode[0].textContent.length-2);
+
+                const descNode = parentNode.getElementsByClassName("product-desc");
+                const productDesc = descNode[0].textContent;
+
+                const product = new Product(productId, productName, productPrice, productDesc);
+
+                addItemToShoppingCart(product);
+            });
+        }
+    }
+
+    //Method to add items to shopping cart.
+    function addItemToShoppingCart(product) {
+        shoppingCart.push(product);
+        let value = encodeURIComponent(JSON.stringify(shoppingCart));
+        let expDate = "Tue, 12 Jan 2021 03:14:07 GMT";
+        let path = "/";
+        document.cookie = "shoppingCart=" + value + "; expires=" + expDate + "; path=" + path;
+    }
+
+    // Get the modal elements
+    const modal = document.getElementById("myModal");
+    const btn = document.getElementById("shoppingCartButton");
+    const span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal and fill it with shopping cart contents.
+    btn.onclick = function() {
+        fillShoppingCart();
+        modal.style.display = "block";
+    };
+
+    function fillShoppingCart() {
+        shoppingCart = parseCookie();
+
+        removeElementsByClass("cart-element");
+
+        if (shoppingCart.length === 0) {
+            let messageElement = document.createElement("h1");
+            messageElement.className = "cart-element";
+            messageElement.innerText = "Empty !";
+            messageElement.style.textAlign = "center";
+            document.getElementById("modal-header").after(messageElement);
+        } else {
+            for (let i = 0; i < shoppingCart.length; i++) {
+                let cartElement = document.createElement("div");
+                cartElement.className = "cart-element";
+                let itemName = document.createElement("h2");
+                itemName.innerText = shoppingCart[i].name;
+                itemName.className = "product-info";
+                let itemPrice = document.createElement("h3");
+                itemPrice.innerText = shoppingCart[i].price + "$";
+                itemPrice.className = "product-info";
+                let itemId = document.createElement("h3");
+                itemId.innerText = "ID: " + shoppingCart[i].id;
+                itemId.className = "product-info";
+                let itemDesc = document.createElement("h3");
+                itemDesc.innerText = shoppingCart[i].description;
+                itemDesc.className = "product-info";
+
+                let deleteElementBtn = document.createElement("span");
+                deleteElementBtn.className = "close";
+                deleteElementBtn.innerText = "x";
+
+                cartElement.insertAdjacentElement('beforeend', itemId);
+                cartElement.insertAdjacentElement('beforeend', itemPrice);
+                cartElement.insertAdjacentElement('beforeend', itemName);
+                cartElement.insertAdjacentElement('beforeend', itemDesc);
+                cartElement.insertAdjacentElement('beforeend', deleteElementBtn);
+
+                deleteElementBtn.addEventListener('click', function () {
+                    cartElement.remove();
+
+                    if (document.getElementsByClassName("cart-element").length === 0) {
+                        removeElementsByClass("confirm-order-button");
+                    }
+
+                    shoppingCart.splice(i, 1);
+                    let value = encodeURIComponent(JSON.stringify(shoppingCart));
+                    let expDate = "Tue, 12 Jan 2021 03:14:07 GMT";
+                    let path = "/";
+                    document.cookie = "shoppingCart=" + value + "; expires=" + expDate + "; path=" + path;
+                });
+
+                document.getElementById("modal-header").after(cartElement);
+                if (document.getElementsByClassName("confirm-order-button").length === 0) {
+                    document.getElementById("inner-modal").lastChild.after(generateConfirmButton());
+                }
+            }
+        }
+    }
+
+    // Create button for order confirmation, which sends AJAX request.
+    function generateConfirmButton() {
+        const confirmButton = document.createElement("a");
+        confirmButton.href = "/order";
+        confirmButton.className = "confirm-order-button";
+        confirmButton.textContent = "Confirm Order";
+
+        return confirmButton;
+    }
+
+    function parseCookie() {
+        let cookie = decodeURIComponent(document.cookie);
+
+        if (!cookie.includes("shoppingCart") || cookie === "shoppingCart=[]") {
+            return [];
+        } else {
+            cookie = cookie.split("[")[1];
+            cookie = cookie.split("]")[0];
+            const cookieArray = cookie.split("},");
+
+            for (let i = 0; i < cookieArray.length-1; i++) {
+                cookieArray[i] = cookieArray[i] + "}";
+            }
+
+            const productArray = [];
+
+            for (let i = 0; i < cookieArray.length; i++) {
+                productArray.push(JSON.parse(cookieArray[i]));
+            }
+
+            return productArray;
+        }
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    function removeElementsByClass(className) {
+        let elements = document.getElementsByClassName(className);
+        while(elements.length > 0){
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+</script>
+
+</body>
+</html>

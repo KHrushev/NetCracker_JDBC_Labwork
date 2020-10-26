@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Card Template</title>
+</head>
+<body>
+    <div th:each="item : ${productList}" class="card">
+        <h1 class="product-name" th:text="${item.name}"></h1>
+        <h4 class="product-id" th:text="'Item ID:' + ${item.getId()}" style="color: #5a5a5a"></h4>
+        <h3 class="product-desc" th:text="${item.description}"></h3>
+        <h3 class="product-price" th:text="${item.price} + '$'"></h3>
+        <button class="addToCartButton">Add to Cart</button>
+    </div>
+</body>
+</html>

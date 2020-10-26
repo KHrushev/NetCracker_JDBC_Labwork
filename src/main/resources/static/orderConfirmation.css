@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Calibri, serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+    border-radius: 40px;
+}
+
+a:hover {
+    background-color: rgba(0,0,0, .6);
+    color: white;
+}
+
+.header {
+    height: 7vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #f2f2f2;
+    outline: 2px solid black;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 93vh;
+    background-color: black;
+}
+
+.form-container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#orderForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#orderForm label {
+    padding: 10px 30px;
+    font-size: 2em;
+}
+
+#orderForm input[type=text], input[type=password] {
+    padding: 25px 35px;
+    font-size: 1.9em;
+    border-radius: 20px;
+    width: 65%;
+    -webkit-box-shadow: 0 0 8px 3px rgba(255,255,255,0.7);
+    box-shadow: 0 0 8px 3px rgba(255,255,255,0.7);
+    background-color: rgba(0,0,0,.8);
+    color: white;
+}
+
+#orderForm input[type="submit"] {
+    padding: 15px 30px;
+    margin: 30px 0 0 0;
+    width: 80%;
+    border-radius: 20px;
+    font-size: 2em;
+    background-color: rgba(255,255,255, 0.8);
+    color: black;
+}
+
+input:focus {
+    outline: none;
+}
+
+.list-container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    border-left: 1px solid white;
+}
+
+.product-list {
+    display: flex;
+    padding: 30px 0;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+    padding: 16px;
+    margin: 16px;
+    text-align: center;
+    background-color: #f1f1f1;
+    height: 150px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    color: black;
+    border-radius: 10px;
+}

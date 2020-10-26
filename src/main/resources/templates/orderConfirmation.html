@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Order</title>
+    <link rel="stylesheet" type="text/css" href="orderConfirmation.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo" style="width: 15%">
+            <a href="/"><- Go Back</a>
+        </div>
+        <h1 class="logo" style="width: 70%">Online Shop</h1>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <form id="orderForm" method="post" action="/confirm">
+                <label for="username">Your Username: </label>
+                <input id="username" name="username" type="text" placeholder="Enter username" required>
+
+                <label for="password">Your Password: </label>
+                <input id="password" name="password" type="password" placeholder="Enter password" required>
+
+                <label for="address">Your Address: </label>
+                <input id="address" name="address" type="text" placeholder="Enter address" required>
+
+                <input id="submitOrderBtn" type="submit" value="Submit order">
+            </form>
+        </div>
+
+        <div class="list-container">
+            <h1 class="order-headline">Your Order:</h1>
+
+            <div class="product-list">
+                <div th:each="item : ${productList}" class="card">
+                    <h1 class="product-name" th:text="${item.getName()}"></h1>
+                    <h4 class="product-id" th:text="'Item ID:' + ${item.getId()}" style="color: #5a5a5a"></h4>
+                    <h3 class="product-desc" th:text="${item.getDescription()}"></h3>
+                    <h3 class="product-price" th:text="${item.getPrice()} + '$'"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
