@@ -1,0 +1,73 @@
+drop table ORDER_DETAILS;
+drop table PRODUCTS;
+drop table ORDERS;
+drop table USERS;
+drop table CATEGORIES;
+
+create table CATEGORIES(
+    category_id number GENERATED ALWAYS as IDENTITY primary key,
+    name varchar(20) not null,
+    description varchar(40)
+);
+
+create table USERS(
+    user_id number GENERATED ALWAYS as IDENTITY primary key,
+    name varchar(20) not null,
+    password varchar(20) not null,
+    address varchar(30) not null
+);
+
+create table ORDERS(
+    order_id number GENERATED ALWAYS AS IDENTITY primary key ,
+    "date" DATE not null,
+    total_price float not null,
+    user_id integer not null,
+    constraint orders_fk1 foreign key (user_id)
+                   references USERS(user_id)
+);
+
+create table PRODUCTS(
+    product_id number GENERATED ALWAYS as IDENTITY primary key,
+    name varchar(20) not null,
+    price float not null,
+    description varchar(40),
+    category_id integer not null,
+    constraint category_fk1 foreign key (category_id)
+                     references CATEGORIES(category_id)
+);
+
+create table ORDER_DETAILS(
+    details_id number GENERATED ALWAYS as IDENTITY primary key,
+    product_name varchar(20) not null,
+    product_id integer not null,
+    product_price float not null,
+    order_id integer not null,
+    constraint details_fk1 foreign key (product_id)
+      references PRODUCTS(product_id),
+    constraint details_fk2 foreign key (order_id)
+      references ORDERS(order_id)
+);
+
+insert into CATEGORIES(name, description) values ('Main Course Meals', 'Full course meal to fill your stomach');
+insert into CATEGORIES(name, description) values ('Meat', 'Meat, as it was intended to be');
+insert into CATEGORIES(name, description) values ('Vegetables', 'Fresh and healthy');
+insert into CATEGORIES(name, description) values ('Desserts', 'Delicious masterpieces');
+insert into CATEGORIES(name, description) values ('Drinks', 'Drinks to fresh up your day');
+
+insert into PRODUCTS(name, price, description, category_id) values ('Whopper', 7.99, 'Burger King Whopper', 2);
+insert into PRODUCTS(name, price, description, category_id) values ('Cheeseburger', 9.99, 'Five Guys Cheeseburger', 2);
+insert into PRODUCTS(name, price, description, category_id) values ('Chicken Bucket', 14.99, 'KFC Original Recipe Chicken', 2);
+insert into PRODUCTS(name, price, description, category_id) values ('Limeade', 5.99, 'Sonic Cherry Limeade', 5);
+insert into PRODUCTS(name, price, description, category_id) values ('Frosty', 9.99, 'Wendy''s Frosty', 4);
+insert into PRODUCTS(name, price, description, category_id) values ('Happy Meal', 10.99, 'McDonald''s Happy Meal', 1);
+insert into PRODUCTS(name, price, description, category_id) values ('Latte', 6.99, 'Starbucks Pumpkin Spice Latte', 5);
+insert into PRODUCTS(name, price, description, category_id) values ('Chicken Sandwich', 8.99, 'Chick-fil-A Chicken Sandwich', 2);
+insert into PRODUCTS(name, price, description, category_id) values ('Glazed Doughnuts', 4.99, 'Krispy Kreme Original Glazed Doughnuts', 4);
+insert into PRODUCTS(name, price, description, category_id) values ('Pepperoni Pizza', 19.99, 'Domino''s Pepperoni Pizza', 1);
+insert into PRODUCTS(name, price, description, category_id) values ('Biscuits', 5.99, 'Popeyes Biscuits', 4);
+insert into PRODUCTS(name, price, description, category_id) values ('Chicken Nuggets', 12.99, 'Wendy''s Chicken Nuggets', 1);
+insert into PRODUCTS(name, price, description, category_id) values ('Macchiato', 5.99, 'Starbucks Macchiato', 5);
+insert into PRODUCTS(name, price, description, category_id) values ('Baked Apple Pie', 14.99, 'McDonald''s Baked Apple Pie', 5);
+insert into PRODUCTS(name, price, description, category_id) values ('Vegetable Pasta', 12.99, 'Original Recipe Vegetable Pasta', 3);
+insert into PRODUCTS(name, price, description, category_id) values ('Potato Salad', 9.99, 'Original Recipe Potato Salad', 3);
+insert into PRODUCTS(name, price, description, category_id) values ('Ranch Dressing', 19.99, 'Original Recipe Ranch Dressing', 3);
